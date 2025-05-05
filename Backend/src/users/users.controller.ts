@@ -1,11 +1,14 @@
-// src/users/users.controller.ts
-import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Body, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { AuthService } from '../auth/auth.service';
 import { UsersService } from './users.service';
-import { UnauthorizedException } from '@nestjs/common';
+import { LoginDto } from '../auth/dto/login.dto';
 
-@Controller('Users')
+@Controller('users')
 export class UsersController {
-     constructor(private readonly usersService: UsersService) { }
+     constructor(
+          private readonly usersService: UsersService,
+          private readonly authService: AuthService, // this depends on AuthModule being imported correctly
+     ) { }
 
      @Post('register')
      async register(@Body() body: { username: string; email: string; password: string }) {
@@ -18,14 +21,24 @@ export class UsersController {
           return this.usersService.registerUser(username, email, password);
      }
 
-
      @Post('login')
-     async login(@Body() body: { email: string, password: string }) {
-          try {
-               const token = await this.usersService.loginUser(body.email, body.password);
-               return { message: 'Login successful', token };
-          } catch (error) {
+     async login(@Body() loginDto: LoginDto) {
+          const user = await this.usersService.validateUser(loginDto.email, loginDto.password);
+
+          if (!user) {
                throw new UnauthorizedException('Invalid credentials');
           }
+
+          const token = await this.authService.generateToken(user);
+
+          return {
+               message: 'Login successful',
+               token,
+               user: {
+                    id: user.id,
+                    email: user.email,
+                    role: user.role,
+               },
+          };
      }
 }

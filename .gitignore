@@ -15,33 +15,16 @@
 /frontend/.next
 /frontend/out
 
+# TypeORM generated files
+.ormconfig.js
+ormconfig.json
+
 # TypeScript specific
 *.tsbuildinfo
 
-# VS Code settings
-.vscode/
-
-# macOS system files
-.DS_Store
-
-# Windows system files
-Thumbs.db
-
 # npm package-lock files (if you use yarn, ignore yarn.lock instead)
 package-lock.json
-yarn.lock
-
-# next.js build output
-.next/
-out/
-
-# Logs and debug files
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# IDE specific
-.idea/
 
 # Backend build
 /backend/dist/

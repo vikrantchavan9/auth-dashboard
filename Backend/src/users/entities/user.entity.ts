@@ -1,18 +1,20 @@
+
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity('users') // Table name is explicitly set to "users"
+@Entity('users')
 export class User {
      @PrimaryGeneratedColumn()
      id: number;
 
-     @Column({ nullable: true })  // Allow username to be nullable
+     @Column({ unique: true })
      username: string;
 
-     @Column({ nullable: false })
+     @Column({ unique: true })
      email: string;
 
      @Column()
      password: string;
 
-     // Other columns...
+     @Column({ default: 'customer' }) // Possible values: 'admin', 'customer', etc.
+     role: string;
 }

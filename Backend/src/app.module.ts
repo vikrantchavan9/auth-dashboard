@@ -1,30 +1,29 @@
+// app.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersController } from './users/users.controller';
-import { UsersService } from './users/users.service';
-import { User } from './users/user.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { User } from './users/entities/user.entity';
+import { UsersModule } from './users/users.module'; // ✅ Import UsersModule
+import { AuthModule } from './auth/auth.module';     // ✅ Import AuthModule
 
 @Module({
      imports: [
-          // Correct database configuration
           TypeOrmModule.forRoot({
-               type: 'postgres',  // Replace with your DB type (e.g., mysql, postgres)
-               host: 'localhost',  // DB host
-               port: 5432,         // DB port
-               username: 'postgres',  // DB username
-               password: 'root',  // DB password
-               database: 'auth_dashboard',  // DB name
-               entities: [User],  // Specify your entities
-               synchronize: true,  // Set to true in development for auto migrations
+               type: 'postgres',
+               host: 'localhost',
+               port: 5432,
+               username: 'postgres',
+               password: 'root',
+               database: 'auth_dashboard',
+               entities: [User],
+               synchronize: true,
           }),
-          TypeOrmModule.forFeature([User]),  // Make sure you register the User entity
+          UsersModule,   // ✅ Register feature modules
+          AuthModule,    // ✅ Register AuthModule
           JwtModule.register({
-               secret: 'your-secret-key',  // Use a secret for signing JWT tokens
-               signOptions: { expiresIn: '1h' },  // Token expiration time
+               secret: 'your-secret-key',
+               signOptions: { expiresIn: '1h' },
           }),
      ],
-     controllers: [UsersController],
-     providers: [UsersService],
 })
 export class AppModule { }
